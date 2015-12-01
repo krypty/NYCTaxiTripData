@@ -127,3 +127,5 @@ src/main/resources
 .classpath
 .project
 .settings/
+
+taxidata/
