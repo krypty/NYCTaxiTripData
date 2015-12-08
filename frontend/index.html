@@ -56,8 +56,6 @@
 
             t = tinycolor("HSV " + H + " "  + S + " "  + V);
 
-            //alert(power);
-
 			return "#" + t.toHex();
 		}
 
@@ -87,19 +85,6 @@
 		};
 
 		info.addTo(map);
-
-
-		// get color depending on population density value
-		/*function getColor(d) {
-			return d > 100 ? '#d4002b' :
-			       d > 90  ? '#aa0055' :
-			       d > 75  ? '#800080' :
-			       d > 60  ? '#6a0095' :
-			       d > 45   ? '#5500aa' :
-			       d > 30   ? '#2b00d4' :
-			       d > 15   ? '#0000ff' :
-			                  '#000080';
-		}*/
 
 		function style(feature) {
 			return {
