@@ -10,3 +10,5 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % Test
 libraryDependencies += "junit" % "junit" % "4.8.1" % "test"
+libraryDependencies += "io.spray" %%  "spray-json" % "1.3.2"
+libraryDependencies += "com.esri.geometry" % "esri-geometry-api" % "1.2.1"

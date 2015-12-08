@@ -117,7 +117,7 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 
-src/main/resources
+#src/main/resources
 
 /bin/
 
