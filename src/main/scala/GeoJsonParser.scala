@@ -5,7 +5,6 @@ import scala.collection.mutable.HashMap
 import spray.json._
 import DefaultJsonProtocol._
 import scala.io.Source
-import java.io.File
 
 object GeoJsonParser {
 
@@ -16,7 +15,6 @@ object GeoJsonParser {
       val json = Source.fromInputStream(stream).mkString
 
       val jsonAst = json.parseJson
-
 
       val regions = new HashMap[Int, Polygon]()
       val features = jsonAst.asJsObject.getFields("features")(0).convertTo[JsArray].elements.foreach { feature =>
