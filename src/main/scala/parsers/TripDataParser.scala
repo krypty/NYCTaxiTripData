@@ -43,5 +43,7 @@ object TripDataParser {
 
     val rdd = sqlContext.sql( s"""SELECT pickup_region, total_time_in_secs, (total_time_in_secs / $sum_in_secs) * 100 as total_time_in_percent FROM region_time_table ORDER BY total_time_in_secs DESC, pickup_region ASC """).rdd
     println("rdd count : " + rdd.count())
+
+    gjParser.generateJsonFile(rdd)
   }
 }
