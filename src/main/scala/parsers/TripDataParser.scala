@@ -24,7 +24,9 @@ object TripDataParser {
       .option("header", "true") // Use first line of all files as header
       .load(TRIP_DATA_FILENAME).registerTempTable("tripdata_table")
 
-    val regions = GeoJsonParser.parse("conciles.geojson")
+
+    val gjParser = new GeoJsonParser("conciles.geojson")
+    val regions = gjParser.parse()
     val regionsManager = new RegionsManager(regions)
 
     def getRegion(longitude: Double, latitude: Double) = {
@@ -39,6 +41,7 @@ object TripDataParser {
     println("sum in secs: " + sum_in_secs)
     sqlContext.sql( """SELECT pickup_region, sum(trip_time_in_secs) as total_time_in_secs FROM tripdata_region_table GROUP BY pickup_region """).registerTempTable("region_time_table")
 
-    sqlContext.sql( s"""SELECT pickup_region, total_time_in_secs, (total_time_in_secs / $sum_in_secs) * 100 as total_time_in_percent FROM region_time_table ORDER BY total_time_in_secs DESC, pickup_region ASC """).show()
+    val rdd = sqlContext.sql( s"""SELECT pickup_region, total_time_in_secs, (total_time_in_secs / $sum_in_secs) * 100 as total_time_in_percent FROM region_time_table ORDER BY total_time_in_secs DESC, pickup_region ASC """).rdd
+    println("rdd count : " + rdd.count())
   }
 }

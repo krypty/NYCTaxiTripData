@@ -4,7 +4,8 @@ object Main {
   def main(args: Array[String]) {
 
 
-    val regions = GeoJsonParser.parse("conciles.geojson")
+    val gjParser = new GeoJsonParser("conciles.geojson")
+    val regions = gjParser.parse()
 
     val regionsManager = new RegionsManager(regions)
 

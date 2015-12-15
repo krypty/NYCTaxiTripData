@@ -9,7 +9,8 @@ class GeoJsonTest extends FunSuite with BeforeAndAfterAll {
 
   test("'neuchatel' should not be in New York") {
 
-    val regions = GeoJsonParser.parse("conciles.geojson")
+    val gjParser = new GeoJsonParser("conciles.geojson")
+    val regions = gjParser.parse()
 
     val regionsManager = new RegionsManager(regions)
 
@@ -21,7 +22,8 @@ class GeoJsonTest extends FunSuite with BeforeAndAfterAll {
 
   test("liberty Statue should be in New York, region 1") {
 
-    val regions = GeoJsonParser.parse("conciles.geojson")
+    val gjParser = new GeoJsonParser("conciles.geojson")
+    val regions = gjParser.parse()
 
     val regionsManager = new RegionsManager(regions)
 
