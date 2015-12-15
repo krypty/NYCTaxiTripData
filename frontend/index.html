@@ -28,7 +28,7 @@
 
 		.legend {
 			text-align: left;
-			line-height: 18px;
+			line-height: 21px;
 			color: #555;
 		}
 		.legend i {
@@ -58,8 +58,6 @@
 
 			return "#" + t.toHex();
 		}
-
-        //alert(getColor(0.4));
 
 		var map = L.map('map').setView([40.71, -73.9], 11);
 
@@ -138,14 +136,12 @@
 			onEachFeature: onEachFeature
 		}).addTo(map);
 
-
-
 		var legend = L.control({position: 'bottomright'});
 
 		legend.onAdd = function (map) {
 
 			var div = L.DomUtil.create('div', 'info legend'),
-				grades = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90],
+				grades = [ 10, 20, 30, 40, 50, 60, 70, 80, 90],
 				labels = [],
 				from, to;
 
@@ -163,7 +159,6 @@
 		};
 
 		legend.addTo(map);
-
 	</script>
 </body>
 </html>
