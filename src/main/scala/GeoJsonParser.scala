@@ -74,7 +74,7 @@ class GeoJsonParser(filePath: String) {
       }
     }
 
-    new PrintWriter("result.js") { write("var regions = \"" +newJsonObj.toString + "\""); close }
+    new PrintWriter("frontend/city_council.js") { write("var statesData = " + newJsonObj.toString); close }
 
   }
 }
