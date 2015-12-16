@@ -50,11 +50,11 @@
 	<script type="text/javascript">
 		function getColor(power)
 		{
-			H = power; // Hue (note 0.4 = Green, see huge chart below)
+			H = power/24.0 * 120 + 240; // Hue (note 0.4 = Green, see huge chart below)
 			S = 0.9; // Saturation
 			V = 0.9; // Brightness
 
-            t = tinycolor("HSV " + H + " "  + S + " "  + V);
+            t = tinycolor("HSV " + H + " "  + S + " "  + V + "");
 
 			return "#" + t.toHex();
 		}
