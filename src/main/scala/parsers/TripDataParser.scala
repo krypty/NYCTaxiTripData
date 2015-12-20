@@ -12,7 +12,8 @@ object TripDataParser {
     Logger.getLogger("org").setLevel(Level.WARN)
     Logger.getLogger("akka").setLevel(Level.WARN)
 
-    val TRIP_DATA_FILENAME = "taxidata/trip_data_first10000.csv"
+    val TRIP_DATA_FILENAME = "taxidata/trip_data_1.csv"
+    //    val TRIP_DATA_FILENAME = "taxidata/trip_data_first10000.csv"
 
     val conf = new SparkConf().setMaster("local[2]").setAppName("Simple Application")
     val sc = new SparkContext(conf)
@@ -37,11 +38,13 @@ object TripDataParser {
     // or using raw sql
     sqlContext.sql( """SELECT *, getRegion(pickup_longitude, pickup_latitude) as pickup_region FROM tripdata_table """).registerTempTable("tripdata_region_table")
 
-    val sum_in_secs = sqlContext.sql( """SELECT sum(trip_time_in_secs) FROM tripdata_region_table""").collect()(0)(0)
-    println("sum in secs: " + sum_in_secs)
+    val sumInSecs = sqlContext.sql( """SELECT sum(trip_time_in_secs) FROM tripdata_region_table""").collect()(0)(0).asInstanceOf[Double]
+    println("sum in secs: " + sumInSecs)
     sqlContext.sql( """SELECT pickup_region, sum(trip_time_in_secs) as total_time_in_secs FROM tripdata_region_table GROUP BY pickup_region """).registerTempTable("region_time_table")
 
-    val rdd = sqlContext.sql( s"""SELECT pickup_region, total_time_in_secs, (total_time_in_secs / $sum_in_secs) * 100 as total_time_in_percent FROM region_time_table ORDER BY total_time_in_secs DESC, pickup_region ASC """).rdd
+    val sumInSecsStr: String = "%.1f".format(sumInSecs)
+    val rdd = sqlContext.sql( s"""SELECT pickup_region, total_time_in_secs, (total_time_in_secs / $sumInSecsStr) * 100 as total_time_in_percent FROM region_time_table ORDER BY total_time_in_secs DESC, pickup_region ASC """).rdd
+
     println("rdd count : " + rdd.count())
 
     gjParser.generateJsonFile(rdd)
