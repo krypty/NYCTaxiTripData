@@ -15,6 +15,7 @@ libraryDependencies += "com.esri.geometry" % "esri-geometry-api" % "1.2.1"
 libraryDependencies += "com.databricks" % "spark-csv_2.10" % "1.3.0"
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.3.10"
 libraryDependencies += "com.mandubian" %% "play-json-zipper" % "1.2"
+libraryDependencies += "com.github.nscala-time" %% "nscala-time" % "2.6.0"
 
 
 // The Typesafe repository
