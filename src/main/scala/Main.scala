@@ -29,8 +29,9 @@ object Main extends Serializable {
     Logger.getLogger("org").setLevel(Level.WARN)
     Logger.getLogger("akka").setLevel(Level.WARN)
 
-//        val TRIP_DATA_FILENAME = "taxidata/trip_data_1.csv"
-    val TRIP_DATA_FILENAME = "taxidata/trip_data_first10000.csv"
+    val TRIP_DATA_FILENAME = "taxidata/trip_data_1.csv"
+    //        val TRIP_DATA_FILENAME = "taxidata/trip_data_7.csv"
+    //        val TRIP_DATA_FILENAME = "taxidata/trip_data_first10000.csv"
 
     val conf = new SparkConf().setMaster("local[2]").setAppName("Simple Application")
     val sc = new SparkContext(conf)

@@ -59,14 +59,14 @@ class GeoJsonParser(filePath: String) {
       if (dataLine.isDefined) {
         newJsonObj = newJsonObj.set(
           (__ \ 'features) (id) \ 'properties \ 'name -> JsNumber(counDist),
-          (__ \ 'features) (id) \ 'properties \ 'count -> JsNumber(dataLine.get._2.count),
+          (__ \ 'features) (id) \ 'properties \ 'mean -> JsNumber(dataLine.get._2.mean),
           (__ \ 'features) (id) \ 'properties \ 'density -> JsNumber((dataLine.get._2.mean / maxMean) * 100)
         )
       }
       else {
         newJsonObj = newJsonObj.set(
           (__ \ 'features) (id) \ 'properties \ 'name -> JsNumber(counDist),
-          (__ \ 'features) (id) \ 'properties \ 'count -> JsNumber(0),
+          (__ \ 'features) (id) \ 'properties \ 'mean -> JsNumber(0),
           (__ \ 'features) (id) \ 'properties \ 'density -> JsNumber(100)
         )
       }

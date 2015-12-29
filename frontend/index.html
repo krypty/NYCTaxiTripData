@@ -78,7 +78,7 @@
 
 		info.update = function (props) {
 			this._div.innerHTML = '<h4>NYC Taxis</h4>' +  (props ?
-				'<b>' + props.name + '</b><br />' + parseFloat(Math.round(props.density * 100) / 100).toFixed(1) + ' mean/max(mean)'
+				'<b>' + props.name + '</b><br />' + parseFloat(Math.round(props.density * 100) / 100).toFixed(1) + ' mean/max(mean)' + '</br>' + parseFloat(Math.round(props.mean * 100) / 100).toFixed(1) + ' secs'
 				: 'Hover to see more informations');
 		};
 
