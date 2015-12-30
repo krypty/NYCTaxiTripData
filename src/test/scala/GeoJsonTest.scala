@@ -4,6 +4,9 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
+/**
+  * Unit test for GeoJsonParser
+  */
 @RunWith(classOf[JUnitRunner])
 class GeoJsonTest extends FunSuite with BeforeAndAfterAll {
 

@@ -2,6 +2,9 @@
  * Copyright 2015 Sanford Ryza, Uri Laserson, Sean Owen and Joshua Wills
  *
  * See LICENSE file for further information.
+ *
+ *
+ * Based on: https://github.com/sryza/aas/tree/master/ch08-geotime
  */
 
 import com.esri.core.geometry.Point
@@ -26,45 +29,49 @@ object Main extends Serializable {
 
   def main(args: Array[String]): Unit = {
 
+    // reduce console verbosity
     Logger.getLogger("org").setLevel(Level.WARN)
     Logger.getLogger("akka").setLevel(Level.WARN)
 
     val TRIP_DATA_FILENAME = "taxidata/trip_data_1.csv"
     //        val TRIP_DATA_FILENAME = "taxidata/trip_data_7.csv"
-    //        val TRIP_DATA_FILENAME = "taxidata/trip_data_first10000.csv"
+    //    val TRIP_DATA_FILENAME = "taxidata/trip_data_first10000.csv"
 
     val conf = new SparkConf().setMaster("local[2]").setAppName("Simple Application")
     val sc = new SparkContext(conf)
 
     val sqlContext = new SQLContext(sc)
 
+    // prepare tools to work with NYC regions
     val gjParser = new GeoJsonParser("conciles.geojson")
     val regions = gjParser.parse()
     val regionsManager = new RegionsManager(regions)
 
+    // read and parse CSV taxi data
     val rdd = sqlContext.read
       .format("com.databricks.spark.csv")
       .option("header", "true") // Use first line of all files as header
       .load(TRIP_DATA_FILENAME).rdd
 
-    //    rdd.foreach(x => println(x))
-
+    /**
+      * Convert String to Yoda time
+      * @param str String to parse
+      * @return the parsed DateTime
+      */
     def stringToDateTime(str: Any) = DateTimeFormat.forPattern("YYYY-MM-dd H:mm:s").parseDateTime(str.asInstanceOf[String])
 
     // contains only the cols we need (hack_license, pickup_datetime, dropoff_datetime, time_in_secs, pickup_longitude, pickup_latitude, dropoff_longitude, dropoff_latitude)
     var rddCleaned = rdd.map(r => (r(1), stringToDateTime(r(5)), stringToDateTime(r(6)), r(8), r(10), r(11), r(12), r(13)))
 
-    val TRIP_TIME_LIMIT = 10800
+    val TRIP_TIME_LIMIT = 3 * 60 * 60 // in secs
     rddCleaned = rddCleaned.filter(r => r._4.asInstanceOf[String].toLong > 0 && r._4.asInstanceOf[String].toLong < TRIP_TIME_LIMIT)
-    //    rddCleaned.foreach(r => println(r))
 
-
+    // rdd: (hack_license, trip)
     val taxiDone = rddCleaned.map(r => (r._1.asInstanceOf[String], new Trip(r._2, r._3, new Point(r._5.asInstanceOf[String].toDouble, r._6.asInstanceOf[String].toDouble), new Point(r._7.asInstanceOf[String].toDouble, r._8.asInstanceOf[String].toDouble))))
 
+    // group by key and sort by values where key = (hack_license, pickup_time_millis)
     def secondaryKeyFunc(trip: Trip) = trip.pickupTime.getMillis
     val sessions = groupByKeyAndSortValues(taxiDone, secondaryKeyFunc, split, 30)
-
-    //    sessions.foreach(r => println(r))
     sessions.cache()
 
     def regionDuration(t1: Trip, t2: Trip): (Int, Duration) = {
@@ -80,6 +87,7 @@ object Main extends Serializable {
         viter.map(p => regionDuration(p(0), p(1)))
       }).cache()
 
+    // we ignore regions with negative duration
     val regionStats = regionDurations.filter {
       case (b, d) => d.getMillis >= 0
     }.mapValues(d => {
@@ -88,14 +96,12 @@ object Main extends Serializable {
     })
       .reduceByKey((a, b) => a.merge(b)).collect()
 
+    // print computed regions stats
     regionStats.foreach(println)
 
 
+    // generate JSON file for the frontend
     gjParser.generateJsonFile(regionStats)
-  }
-
-  def point(longitude: String, latitude: String): Point = {
-    new Point(longitude.toDouble, latitude.toDouble)
   }
 
   def split(t1: Trip, t2: Trip): Boolean = {
